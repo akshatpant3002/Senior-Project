@@ -1,0 +1,9 @@
+const mongoose = require('mongoose');
+const Schema = mongoose.Schema;
+
+const customerIssueSchema = new Schema({
+    issueDescription: { type: String, required: true },
+    submittedAt: { type: Date, default: Date.now }
+});
+
+module.exports = mongoose.model('CustomerIssue', customerIssueSchema);
