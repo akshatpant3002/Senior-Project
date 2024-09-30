@@ -1,0 +1,9 @@
+const mongoose = require('mongoose');
+const Schema = mongoose.Schema;
+
+const divisionSchema = new Schema({
+    title: { type: String, required: true },
+    customerIssues: [{ type: mongoose.Schema.Types.ObjectId, ref: 'CustomerIssue' }]
+});
+
+module.exports = mongoose.model('Division', divisionSchema);
