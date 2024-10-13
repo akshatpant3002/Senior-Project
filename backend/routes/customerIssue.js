@@ -6,4 +6,6 @@ router.post('/submitIssue', submitIssue);
 
 router.delete('/issues/:issueId', removeIssue);
 
+router.get('/issues', getAllIssues);
+
 module.exports = router;

@@ -11,4 +11,7 @@ router.post('/createDivision', createDivision);
 // Route to delete a division
 router.delete('/divisions/:divisionId', deleteDivision);
 
+//Route to adsiggn issue to division
+router.put('/divisions/:divisionId/assignIssue', assignIssueToDivision);
+
 module.exports = router;

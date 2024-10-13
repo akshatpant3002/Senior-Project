@@ -66,4 +66,22 @@ const removeIssue = async (req, res) => {
   }
 };
 
+const getAllIssues = async (req, res) => {
+  try {
+    const issues = await Issue.find();
+
+    if (issues.length === 0) {
+      return res.status(404).json({ message: 'No issues found' });
+    }
+
+    res.status(200).json({
+      message: 'All customer issues retrieved successfully',
+      issues
+    });
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
+};
+
+
 module.exports = { submitIssue, removeIssue };
