@@ -33,4 +33,34 @@ const deleteDivision = async (req, res) => {
   }
 };
 
-module.exports = { getAllDivisions, createDivision, deleteDivision };
+const assignIssueToDivision = async (req, res) => {
+  const { divisionId } = req.params;
+  const { issueId } = req.body;
+
+  try {
+    const issue = await Issue.findById(issueId);
+    const division = await Team.findById(divisionId);
+
+    if (!issue) {
+      return res.status(404).json({ message: 'Issue not found' });
+    }
+
+    if (!division) {
+      return res.status(404).json({ message: 'Division not found' });
+    }
+
+    // Add issue to the division's customerIssues array
+    division.customerIssues.push(issue._id);
+    await division.save();
+
+    res.status(200).json({
+      message: 'Issue assigned to division successfully',
+      division
+    });
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
+};
+
+
+module.exports = { getAllDivisions, createDivision, deleteDivision, assignIssueToDivision };
