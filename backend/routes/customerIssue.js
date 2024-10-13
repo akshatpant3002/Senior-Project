@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { submitIssue, removeIssue } = require('../controllers/customerIssueController');
+const { submitIssue, removeIssue, getAllIssues } = require('../controllers/customerIssueController');
 
 router.post('/submitIssue', submitIssue);
 

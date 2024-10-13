@@ -84,4 +84,4 @@ const getAllIssues = async (req, res) => {
 };
 
 
-module.exports = { submitIssue, removeIssue };
+module.exports = { submitIssue, removeIssue, getAllIssues};
