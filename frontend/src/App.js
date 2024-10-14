@@ -1,5 +1,5 @@
 import logoImage from './logo.svg'; // Renamed to provide better context
-import './App.css';
+import './App.css'; 
 import TaskBoard from './Kanban'; 
 
 function TaskManager() { 
