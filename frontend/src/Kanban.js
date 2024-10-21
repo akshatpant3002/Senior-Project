@@ -8,17 +8,21 @@ const TaskBoard = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [page, setPage] = useState(1); // Pagination for lazy loading
 
-  const fetchDepartmentsData = async () => {    //MAKE SURE TO CHANGE TO ALIGN WITH BACKEND
-    setIsLoading(true); 
+  const fetchDepartmentsData = async (page = 1) => {
+    setIsLoading(true);
     try {
-      const response = await axios.get('http://localhost:4000/api/department/departments');
-      console.log('Fetched data:', response.data);
+      const response = await axios.get(`http://localhost:4000/api/department/departments?page=${page}&limit=10`); // Add pagination
       const formattedDepartments = response.data.map(dept => ({
         ...dept,
         tasks: dept.supportQueries.map(query => ({ id: query._id, title: query.queryText }))
       }));
-      setDepartments(formattedDepartments);
+      if (page === 1) {
+        setDepartments(formattedDepartments); // Replace data on first load
+      } else {
+        setDepartments(prevDepartments => prevDepartments.concat(formattedDepartments)); // Append data on subsequent loads
+      }
     } catch (error) {
       console.error('Error fetching departments:', error);
       setError(error);
@@ -28,8 +32,20 @@ const TaskBoard = () => {
   };
 
   useEffect(() => {
-    fetchDepartmentsData();
-  }, []);
+    fetchDepartmentsData(page);
+  }, [page]);
+
+  const handleScroll = (event) => {
+    const { scrollTop, scrollHeight, clientHeight } = event.target.scrollingElement;
+    if (scrollTop + clientHeight >= scrollHeight - 5 && !isLoading) {
+      setPage(prevPage => prevPage + 1); // Load more data on scroll
+    }
+  };
+
+  useEffect(() => {
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, [isLoading]);
 
   const handleOpenModal = () => {
     setIsModalOpen(true);
@@ -39,18 +55,18 @@ const TaskBoard = () => {
     setIsModalOpen(false);
   };
 
-  const handleAddQuery = async (queryText) => { //MAKE SURE TO CHANGE TO ALIGN WITH BACKEND
+  const handleAddQuery = async (queryText) => {
     setIsModalOpen(false);
     try {
       await axios.post('http://localhost:4000/api/query/createQuery', { queryText });
-      await fetchDepartmentsData(); // Refresh the department data after adding a query
+      await fetchDepartmentsData(1); // Refresh the department data after adding a query
     } catch (error) {
       console.error('Failed to add query:', error);
       setError(error);
     }
   };
 
-  const handleCreateDepartment = async (departmentName) => {    //MAKE SURE TO CHANGE TO ALIGN WITH BACKEND
+  const handleCreateDepartment = async (departmentName) => {
     try {
       const response = await axios.post('http://localhost:4000/api/department/createDepartment', {
         name: departmentName
@@ -64,7 +80,7 @@ const TaskBoard = () => {
     }
   };
 
-  const handleDeleteDepartment = async (departmentId) => {      //MAKE SURE TO CHANGE TO ALIGN WITH BACKEND
+  const handleDeleteDepartment = async (departmentId) => {
     try {
       await axios.delete(`http://localhost:4000/api/department/departments/${departmentId}`);
       setDepartments(departments.filter(dept => dept._id !== departmentId));
@@ -74,7 +90,7 @@ const TaskBoard = () => {
     }
   };
 
-  if (isLoading) {
+  if (isLoading && !departments.length) {
     return <div>Loading...</div>;
   }
 
