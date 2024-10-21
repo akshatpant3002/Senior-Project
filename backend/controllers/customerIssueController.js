@@ -68,18 +68,30 @@ const removeIssue = async (req, res) => {
 
 const getAllIssues = async (req, res) => {
   try {
-    const issues = await Issue.find();
+    const { page = 1, limit = 10, sortBy = 'submittedAt', order = 'desc' } = req.query;
+    const sortOrder = order === 'asc' ? 1 : -1;
+
+    const issues = await Issue.find()
+      .sort({ [sortBy]: sortOrder })
+      .skip((page - 1) * limit)
+      .limit(parseInt(limit));
 
     if (issues.length === 0) {
-      return res.status(404).json({ message: 'No issues found' });
+      return res.status(204).json({ message: 'No issues found' });
     }
+
+    const totalIssues = await Issue.countDocuments();
 
     res.status(200).json({
       message: 'All customer issues retrieved successfully',
+      totalIssues,
+      currentPage: page,
+      totalPages: Math.ceil(totalIssues / limit),
       issues
     });
   } catch (error) {
-    res.status(400).json({ error: error.message });
+    console.error('Error retrieving customer issues:', error);
+    res.status(500).json({ error: 'An error occurred while retrieving customer issues' });
   }
 };
 
