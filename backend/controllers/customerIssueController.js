@@ -43,24 +43,57 @@ const submitIssue = async (req, res) => {
   }
 };
 
-const removeIssue = async (req, res) => {
-  const { issueId } = req.body;
+// const removeIssue = async (req, res) => {
+//   const { issueId } = req.body;
+//   try {
+//     const existingIssue = await Issue.findById(issueId);
+
+//     if (!existingIssue) {
+//       return res.status(404).json({ message: 'Issue not found' });
+//     }
+
+//     await Issue.findByIdAndRemove(issueId);
+
+//     const team = await Team.findOne({ customerIssues: issueId });
+//     if (team) {
+//       team.customerIssues.pull(issueId);
+//       await team.save();
+//     }
+
+//     res.status(200).json({ message: 'Issue removed successfully' });
+//   } catch (error) {
+//     res.status(400).json({ error: error.message });
+//   }
+// };
+
+const removeIssues = async (req, res) => {
+  const { issueIds } = req.body;
+  if (!Array.isArray(issueIds) || issueIds.length === 0) {
+    return res.status(400).json({ message: 'No issueIds provided or invalid format' });
+  }
+
   try {
-    const existingIssue = await Issue.findById(issueId);
+    const existingIssues = await Issue.find({ _id: { $in: issueIds } });
 
-    if (!existingIssue) {
-      return res.status(404).json({ message: 'Issue not found' });
+    const existingIssueIds = existingIssues.map(issue => issue._id.toString());
+    const notFoundIds = issueIds.filter(id => !existingIssueIds.includes(id));
+
+    if (notFoundIds.length > 0) {
+      return res.status(404).json({ message: `Issues not found for IDs: ${notFoundIds.join(', ')}` });
     }
 
-    await Issue.findByIdAndRemove(issueId);
+    await Issue.deleteMany({ _id: { $in: issueIds } });
 
-    const team = await Team.findOne({ customerIssues: issueId });
-    if (team) {
-      team.customerIssues.pull(issueId);
-      await team.save();
-    }
+    const teams = await Team.find({ customerIssues: { $in: issueIds } });
 
-    res.status(200).json({ message: 'Issue removed successfully' });
+    await Promise.all(
+      teams.map(async (team) => {
+        team.customerIssues = team.customerIssues.filter(issueId => !issueIds.includes(issueId.toString()));
+        await team.save();
+      })
+    );
+
+    res.status(200).json({ message: 'Issues removed successfully' });
   } catch (error) {
     res.status(400).json({ error: error.message });
   }
@@ -96,4 +129,4 @@ const getAllIssues = async (req, res) => {
 };
 
 
-module.exports = { submitIssue, removeIssue, getAllIssues};
+module.exports = { submitIssue, removeIssues, getAllIssues};
