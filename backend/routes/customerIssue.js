@@ -1,10 +1,10 @@
 const express = require('express');
 const router = express.Router();
-const { submitIssue, removeIssue, getAllIssues } = require('../controllers/customerIssueController');
+const { submitIssue, removeIssues, getAllIssues } = require('../controllers/customerIssueController');
 
 router.post('/submitIssue', submitIssue);
 
-router.delete('/issues/:issueId', removeIssue);
+router.delete('/issues/:issueId', removeIssues);
 
 router.get('/issues', getAllIssues);
 
