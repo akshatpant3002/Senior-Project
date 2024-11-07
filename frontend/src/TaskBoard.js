@@ -13,10 +13,10 @@ const TaskBoard = () => {
   const fetchDivisionsData = async (page = 1) => {
     setIsLoading(true);
     try {
-      const response = await axios.get(`http://localhost:4000/api/division/divisions?page=${page}&limit=10`); // Adjusted to match '/divisions'
+      const response = await axios.get(`http://localhost:4000/api/division/divisions?page=${page}&limit=10`);
       const formattedDivisions = response.data.map(division => ({
         ...division,
-        tasks: division.supportQueries?.map(query => ({ id: query._id, title: query.queryText })) || []
+        tasks: division.customerIssues?.map(issue => ({ id: issue._id, title: issue.issueDescription, submittedAt: issue.submittedAt })) || []
       }));
       if (page === 1) {
         setDivisions(formattedDivisions); // Replace data on first load
@@ -55,10 +55,10 @@ const TaskBoard = () => {
     setIsModalOpen(false);
   };
 
-  const handleAddQuery = async (queryText) => {
+  const handleAddQuery = async (issueDescription) => {
     setIsModalOpen(false);
     try {
-      await axios.post('http://localhost:4000/api/customerIssue/submitIssue', { queryText }); // Adjusted to match 'submitIssue' route
+      await axios.post('http://localhost:4000/api/customerIssue/submitIssue', { issueDescription });
       await fetchDivisionsData(1); // Refresh the division data after adding a query
     } catch (error) {
       console.error('Failed to add query:', error);
@@ -68,9 +68,8 @@ const TaskBoard = () => {
 
   const handleDeleteQuery = async (queryId) => {
     try {
-      await axios.post('http://localhost:4000/api/customerIssue/deleteIssue', { id: queryId }); // Adjusted to match 'deleteIssue' route
-      // Optionally re-fetch divisions or update state after deleting
-      await fetchDivisionsData(1);
+      await axios.post('http://localhost:4000/api/customerIssue/deleteIssue', { id: queryId });
+      await fetchDivisionsData(1); // Optionally re-fetch divisions after deleting
     } catch (error) {
       console.error('Failed to delete query:', error);
       setError(error);
@@ -101,10 +100,11 @@ const TaskBoard = () => {
       <div className="task-board">
         {divisions.map(division => (
           <div key={division._id} className="task-column">
-            <h2>{division.name}</h2>
+            <h2>{division.title}</h2> {/* Changed to use `title` */}
             {division.tasks.map(task => (
               <div key={task.id} className="task-card">
                 <p>{task.title}</p>
+                <p>Submitted at: {new Date(task.submittedAt).toLocaleString()}</p>
                 <button onClick={() => handleDeleteQuery(task.id)}>Delete Query</button>
               </div>
             ))}
