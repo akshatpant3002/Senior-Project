@@ -4,7 +4,7 @@ const { submitIssue, removeIssues, getAllIssues } = require('../controllers/cust
 
 router.post('/submitIssue', submitIssue);
 
-router.delete('/issues/:issueId', removeIssues);
+router.delete('/deleteIssue', removeIssues);
 
 router.get('/issues', getAllIssues);
 

@@ -17,6 +17,8 @@ const submitIssue = async (req, res) => {
 
     const assignedTeamName = classificationResponse.classifications[0]?.prediction;
 
+    console.log("assigned Team name: ", assignedTeamName);
+
     if (!assignedTeamName) {
       return res.status(400).json({ error: 'Classification failed' });
     }
@@ -26,12 +28,19 @@ const submitIssue = async (req, res) => {
     });
     await newIssue.save();
 
-    const team = await Team.findOne({ title: assignedTeamName });
 
+    let team = await Team.findOne({ title: assignedTeamName });
     if (team) {
-      team.customerIssues.push(newIssue._id);
-      await team.save();
+        team.customerIssues.push(newIssue._id);
+        await team.save();
+    } else {
+        team = new Team({
+            title: assignedTeamName,
+            customerIssues: [newIssue._id]
+        });
+        await team.save();
     }
+    
 
     res.status(201).json({
       message: 'Issue successfully submitted',
