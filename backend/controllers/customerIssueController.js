@@ -138,4 +138,49 @@ const getAllIssues = async (req, res) => {
 };
 
 
+// More efficent algorithm
+// const getAllIssues = async (req, res) => {
+//   try {
+//     // Parse query parameters with defaults
+//     const page = parseInt(req.query.page) || 1;
+//     const limit = parseInt(req.query.limit) || 10;
+//     const sortBy = req.query.sortBy || 'submittedAt';
+//     const order = req.query.order === 'asc' ? 1 : -1;
+
+//     // Verify that sortBy is a valid field in the Issue schema
+//     const validSortKeys = ['submittedAt', 'status', 'priority']; // Example valid fields
+//     if (!validSortKeys.includes(sortBy)) {
+//       return res.status(400).json({ error: 'Invalid sort key' });
+//     }
+
+//     // Retrieve issues and total count concurrently
+//     const [issues, totalIssues] = await Promise.all([
+//       Issue.find()
+//         .sort({ [sortBy]: order })
+//         .skip((page - 1) * limit)
+//         .limit(limit),
+//       Issue.countDocuments()
+//     ]);
+
+//     // If no issues found, respond with 204 No Content
+//     if (!issues.length) {
+//       return res.status(204).json({ message: 'No issues found' });
+//     }
+
+//     // Respond with retrieved issues and pagination info
+//     res.status(200).json({
+//       message: 'All customer issues retrieved successfully',
+//       totalIssues,
+//       currentPage: page,
+//       totalPages: Math.ceil(totalIssues / limit),
+//       issues
+//     });
+//   } catch (error) {
+//     console.error('Error retrieving customer issues:', error.message);
+//     res.status(500).json({ error: 'An error occurred while retrieving customer issues' });
+//   }
+// };
+
+
+
 module.exports = { submitIssue, removeIssues, getAllIssues};
