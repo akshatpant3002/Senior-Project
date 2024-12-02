@@ -1,33 +1,57 @@
 .sidebar {
-    width: 200px;
-    height: 100vh;
-    background-color: #333;
-    color: white;
-    position: fixed;
-    top: 0;
-    left: 0;
-    display: flex;
-    flex-direction: column;
-    padding: 10px;
-  }
-  
-  .sidebar ul {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-  }
-  
-  .sidebar li {
-    margin: 20px 0;
-  }
-  
-  .sidebar a {
-    text-decoration: none;
-    color: white;
-    font-size: 16px;
-  }
-  
-  .sidebar a:hover {
-    color: #00bcd4;
-  }
-  
+  width: 200px;
+  height: 100vh;
+  background-color: #333;
+  color: white;
+  position: fixed;
+  top: 0;
+  left: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: start; /* Align links to the left */
+  padding: 20px; /* Add padding around the links */
+  box-sizing: border-box;
+}
+
+.sidebar ul {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+  width: 100%; /* Ensures full width for hover effects */
+}
+
+.sidebar li {
+  margin: 20px 0; /* Add space between navigation items */
+}
+
+.sidebar a {
+  text-decoration: none;
+  color: white;
+  font-size: 18px; /* Increase font size */
+  padding: 10px 15px; /* Add padding inside links */
+  border-radius: 5px; /* Add slight rounding for aesthetics */
+  display: block; /* Makes the entire link clickable */
+  transition: background-color 0.3s; /* Smooth hover effect */
+}
+
+.sidebar a:hover {
+  background-color: #444; /* Change background color on hover */
+}
+
+.logout-button {
+  background-color: #ff5e57; /* Red shade for logout */
+  color: white;
+  border: none;
+  padding: 10px 15px;
+  font-size: 16px;
+  font-weight: bold;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  width: 100%; /* Make the button full-width */
+  margin-top: auto; /* Push the button to the bottom of the sidebar */
+}
+
+.logout-button:hover {
+  background-color: #e04842; /* Darker shade on hover */
+}

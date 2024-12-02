@@ -1,12 +1,12 @@
 /* Header styles */
 .task-board-header {
   text-align: center;
-  margin-bottom: 20px; /* Adjust as needed */
+  margin-bottom: 20px;
 }
 
 .task-board-header button {
   padding: 10px 20px;
-  background-color: #5580c09d; /* A nice blue shade */
+  background-color: #5580c09d;
   color: white;
   border: none;
   border-radius: 5px;
@@ -19,11 +19,11 @@
 }
 
 .task-board-header button:hover {
-  background-color: #0056b3; /* Darker shade when hovered */
+  background-color: #0056b3;
 }
 
 .task-board-header button:active {
-  transform: scale(0.98); /* Slightly reduce the size when clicked */
+  transform: scale(0.98);
 }
 
 /* Title styling */
@@ -44,9 +44,16 @@
 }
 
 /* Board and column styling */
+.content {
+  margin-left: 200px; /* Added margin for spacing from the sidebar */
+  padding: 20px; /* Padding for content spacing */
+  box-sizing: border-box;
+}
+
 .task-board {
   display: flex;
-  justify-content: space-between;
+  justify-content: space-between; /* Space columns evenly */
+  gap: 20px; /* Add consistent spacing between columns */
 }
 
 .task-column {
@@ -56,9 +63,9 @@
   padding: 10px;
   min-height: 300px;
   border-radius: 5px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Optional shadow for depth */
-  height: 400px; /* Added fixed height for scroll */
-  overflow-y: auto; /* Make each column scrollable */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  height: 400px; /* Fixed height for consistency */
+  overflow-y: auto; /* Scrollable columns */
 }
 
 .task-column h2 {
@@ -70,7 +77,7 @@
   padding: 10px;
   background-color: #8de0bd9d;
   border-radius: 5px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Consistent with the tasks */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   text-transform: uppercase;
   letter-spacing: 1px;
 }
@@ -81,12 +88,12 @@
   padding: 10px;
   border-radius: 5px;
   margin-bottom: 10px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Consistent shadow */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   cursor: pointer;
   transition: box-shadow 0.3s ease, background-color 0.3s ease;
 }
 
 .task-card:hover {
   background-color: #dcece1b0;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Enhanced shadow for depth */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
