@@ -1,10 +1,69 @@
-const Issue = require('../models/customerIssueModel');
-const Team = require('../models/divisionModel');
+const Issue = require("../models/customerIssueModel");
+const Team = require("../models/divisionModel");
 const { CohereClient } = require("cohere-ai");
 
 const cohere = new CohereClient({
-  token: "xlaNlZPeRdRFhSzQdfgc3apVGHhODVRCtaxBDJlQ"
+  token: "xlaNlZPeRdRFhSzQdfgc3apVGHhODVRCtaxBDJlQ",
 });
+
+const editIssue = async (req, res) => {
+  try {
+    const { issueId, completed, priority, issueDescription } = req.body;
+
+    if (!issueId) {
+      return res.status(400).json({ error: "Issue ID is required." });
+    }
+
+    const issue = await Issue.findById(issueId);
+    if (!issue) {
+      return res.status(404).json({ error: "Issue not found." });
+    }
+
+    if (completed !== undefined) {
+      if (completed === "true") {
+        issue.completed = true;
+      } else if (completed === "false") {
+        issue.completed = false;
+      } else {
+        return res.status(400).json({
+          error: 'Invalid value for completed. Use "true" or "false".',
+        });
+      }
+    }
+
+    if (priority !== undefined) {
+      const validPriorities = ["low", "medium", "high"];
+      if (validPriorities.includes(priority.toLowerCase())) {
+        issue.priority = priority.toLowerCase();
+      } else {
+        return res.status(400).json({
+          error: `Invalid priority value. Use one of: ${validPriorities.join(
+            ", "
+          )}.`,
+        });
+      }
+    }
+
+    if (issueDescription !== undefined) {
+      if (
+        typeof issueDescription === "string" &&
+        issueDescription.trim().length > 0
+      ) {
+        issue.issueDescription = issueDescription.trim();
+      } else {
+        return res.status(400).json({
+          error: "Invalid issue description. It must be a non-empty string.",
+        });
+      }
+    }
+
+    await issue.save();
+
+    res.status(200).json({ message: "Issue edited successfully.", issue });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
 
 const submitIssue = async (req, res) => {
   const { description } = req.body;
@@ -12,40 +71,39 @@ const submitIssue = async (req, res) => {
     const classificationResponse = await cohere.classify({
       model: "92f46bf6-762d-4016-a0dd-0cd1873aea18-ft",
       inputs: [description],
-      examples: []
+      examples: [],
     });
 
-    const assignedTeamName = classificationResponse.classifications[0]?.prediction;
+    const assignedTeamName =
+      classificationResponse.classifications[0]?.prediction;
 
     console.log("assigned Team name: ", assignedTeamName);
 
     if (!assignedTeamName) {
-      return res.status(400).json({ error: 'Classification failed' });
+      return res.status(400).json({ error: "Classification failed" });
     }
 
     const newIssue = new Issue({
-      issueDescription: description
+      issueDescription: description,
     });
     await newIssue.save();
 
-
     let team = await Team.findOne({ title: assignedTeamName });
     if (team) {
-        team.customerIssues.push(newIssue._id);
-        await team.save();
+      team.customerIssues.push(newIssue._id);
+      await team.save();
     } else {
-        team = new Team({
-            title: assignedTeamName,
-            customerIssues: [newIssue._id]
-        });
-        await team.save();
+      team = new Team({
+        title: assignedTeamName,
+        customerIssues: [newIssue._id],
+      });
+      await team.save();
     }
-    
 
     res.status(201).json({
-      message: 'Issue successfully submitted',
+      message: "Issue successfully submitted",
       issueId: newIssue._id,
-      team
+      team,
     });
   } catch (error) {
     res.status(400).json({ error: error.message });
@@ -78,17 +136,23 @@ const submitIssue = async (req, res) => {
 const removeIssues = async (req, res) => {
   const { issueIds } = req.body;
   if (!Array.isArray(issueIds) || issueIds.length === 0) {
-    return res.status(400).json({ message: 'No issueIds provided or invalid format' });
+    return res
+      .status(400)
+      .json({ message: "No issueIds provided or invalid format" });
   }
 
   try {
     const existingIssues = await Issue.find({ _id: { $in: issueIds } });
 
-    const existingIssueIds = existingIssues.map(issue => issue._id.toString());
-    const notFoundIds = issueIds.filter(id => !existingIssueIds.includes(id));
+    const existingIssueIds = existingIssues.map((issue) =>
+      issue._id.toString()
+    );
+    const notFoundIds = issueIds.filter((id) => !existingIssueIds.includes(id));
 
     if (notFoundIds.length > 0) {
-      return res.status(404).json({ message: `Issues not found for IDs: ${notFoundIds.join(', ')}` });
+      return res.status(404).json({
+        message: `Issues not found for IDs: ${notFoundIds.join(", ")}`,
+      });
     }
 
     await Issue.deleteMany({ _id: { $in: issueIds } });
@@ -97,12 +161,14 @@ const removeIssues = async (req, res) => {
 
     await Promise.all(
       teams.map(async (team) => {
-        team.customerIssues = team.customerIssues.filter(issueId => !issueIds.includes(issueId.toString()));
+        team.customerIssues = team.customerIssues.filter(
+          (issueId) => !issueIds.includes(issueId.toString())
+        );
         await team.save();
       })
     );
 
-    res.status(200).json({ message: 'Issues removed successfully' });
+    res.status(200).json({ message: "Issues removed successfully" });
   } catch (error) {
     res.status(400).json({ error: error.message });
   }
@@ -110,8 +176,13 @@ const removeIssues = async (req, res) => {
 
 const getAllIssues = async (req, res) => {
   try {
-    const { page = 1, limit = 10, sortBy = 'submittedAt', order = 'desc' } = req.query;
-    const sortOrder = order === 'asc' ? 1 : -1;
+    const {
+      page = 1,
+      limit = 10,
+      sortBy = "submittedAt",
+      order = "desc",
+    } = req.query;
+    const sortOrder = order === "asc" ? 1 : -1;
 
     const issues = await Issue.find()
       .sort({ [sortBy]: sortOrder })
@@ -119,24 +190,25 @@ const getAllIssues = async (req, res) => {
       .limit(parseInt(limit));
 
     if (issues.length === 0) {
-      return res.status(204).json({ message: 'No issues found' });
+      return res.status(204).json({ message: "No issues found" });
     }
 
     const totalIssues = await Issue.countDocuments();
 
     res.status(200).json({
-      message: 'All customer issues retrieved successfully',
+      message: "All customer issues retrieved successfully",
       totalIssues,
       currentPage: page,
       totalPages: Math.ceil(totalIssues / limit),
-      issues
+      issues,
     });
   } catch (error) {
-    console.error('Error retrieving customer issues:', error);
-    res.status(500).json({ error: 'An error occurred while retrieving customer issues' });
+    console.error("Error retrieving customer issues:", error);
+    res
+      .status(500)
+      .json({ error: "An error occurred while retrieving customer issues" });
   }
 };
-
 
 // More efficent algorithm
 // const getAllIssues = async (req, res) => {
@@ -181,6 +253,4 @@ const getAllIssues = async (req, res) => {
 //   }
 // };
 
-
-
-module.exports = { submitIssue, removeIssues, getAllIssues};
+module.exports = { submitIssue, removeIssues, getAllIssues, editIssue };
