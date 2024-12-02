@@ -1,15 +1,24 @@
-import logoImage from './logo.svg'; // Renamed to provide better context
-import './App.css'; 
-import TaskBoard from './TaskBoard'; 
+import React from "react";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import './App.css';
+import Sidebar from './Components/Sidebar'; // Include Sidebar here
+import TaskManager from './Components/TaskManager';
+import Settings from './Components/Settings';
 
-function TaskManager() { 
+function App() {
   return (
-    <div className="task-manager-container"> {}
-      <TaskBoard />
-    </div>
+    <Router>
+      <div className="app">
+        <Sidebar /> {/* Sidebar is now outside Routes to persist across all pages */}
+        <div className="content" style={{ marginLeft: "200px" }}>
+          <Routes>
+            <Route path="/" element={<TaskManager />} /> {/* Dashboard */}
+            <Route path="/settings" element={<Settings />} /> {/* Settings */}
+          </Routes>
+        </div>
+      </div>
+    </Router>
   );
 }
 
-export default TaskManager;
-
-//app.js
+export default App;

@@ -1,0 +1,67 @@
+/* Styles specific to TaskManager */
+
+/* Container styles */
+.task-manager-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    height: 100vh;
+  }
+  
+  /* Kanban board styles */
+  .task-board {
+    display: flex;
+    justify-content: space-around;
+    padding: 20px;
+    width: 100%;
+    box-sizing: border-box;
+  }
+  
+  .task-column {
+    flex: 1;
+    margin: 0 10px;
+    background-color: #f4f4f4;
+    padding: 10px;
+    min-height: 300px;
+  }
+  
+  .task-card {
+    background-color: #fff;
+    margin-bottom: 10px;
+    padding: 10px;
+    border-radius: 4px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  }
+  
+  /* Header and logo animation styles */
+  .task-manager-header {
+    background-color: #282c34;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    font-size: calc(10px + 2vmin);
+    color: white;
+  }
+  
+  .task-logo {
+    height: 40vmin;
+    pointer-events: none;
+  }
+  
+  @media (prefers-reduced-motion: no-preference) {
+    .task-logo {
+      animation: task-logo-spin infinite 20s linear;
+    }
+  }
+  
+  @keyframes task-logo-spin {
+    from {
+      transform: rotate(0deg);
+    }
+    to {
+      transform: rotate(360deg);
+    }
+  }
+  

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import './Modal.css';  
+import './Styles/Modal.css';  
 
 const QueryModal = ({ isOpen, onClose, onSubmit }) => {
   const [queryText, setQueryText] = useState('');

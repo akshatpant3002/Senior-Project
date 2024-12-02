@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import Modal from './Modal'; // Ensure this points to the correct file path
-import './TaskBoard.css'; // Updated file name for clarity
+import './Styles/TaskBoard.css'; // Updated file name for clarity
 
 const TaskBoard = () => {
   const [divisions, setDivisions] = useState([]);
@@ -95,7 +95,7 @@ const TaskBoard = () => {
       </div>
       <Modal isOpen={isModalOpen} onClose={handleCloseModal} onSubmit={handleAddQuery} />
       <div className="title">
-        Query Board
+        Task Board
       </div>
       <div className="task-board">
         {divisions.map(division => (
