@@ -4,6 +4,7 @@ import './App.css';
 import Sidebar from './Components/Sidebar'; // Include Sidebar here
 import TaskManager from './Components/TaskManager';
 import Settings from './Components/Settings';
+import Reports from './Reports'
 
 function App() {
   return (
@@ -14,6 +15,7 @@ function App() {
           <Routes>
             <Route path="/" element={<TaskManager />} /> {/* Dashboard */}
             <Route path="/settings" element={<Settings />} /> {/* Settings */}
+            <Route path="/insights" element={<Reports />} /> {/* Insights */}
           </Routes>
         </div>
       </div>
