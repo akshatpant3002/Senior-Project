@@ -5,6 +5,7 @@ import _ from 'lodash'; // Install lodash: npm install lodash
 import './Styles/TaskBoard.css'; // Updated file name for clarity
 import EditQueryModal from './EditQueryModal'; // Modal for editing queries
 
+
 const TaskBoard = () => {
   const [divisions, setDivisions] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -13,6 +14,9 @@ const TaskBoard = () => {
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [selectedQuery, setSelectedQuery] = useState(null);
   const [page, setPage] = useState(1);
+  const [showCompleted, setShowCompleted] = useState(true);
+  const [sortBy, setSortBy] = useState("date"); // State to track the sort option
+
 
   const fetchDivisionsData = async (page = 1) => {
     setIsLoading(true);
@@ -167,6 +171,15 @@ const TaskBoard = () => {
       console.error("Failed to update query:", error.response?.data || error.message);
     }
   };
+
+  const sortTasks = (tasks) => {
+    if (sortBy === "priority") {
+      const priorityOrder = { high: 1, medium: 2, low: 3 };
+      return [...tasks].sort((a, b) => priorityOrder[a.priority] - priorityOrder[b.priority]);
+    } else {
+      return [...tasks].sort((a, b) => new Date(b.submittedAt) - new Date(a.submittedAt));
+    }
+  };
   
 
   const handleQueryClick = (query) => {
@@ -180,6 +193,15 @@ const TaskBoard = () => {
 
   return (
     <div className="content">
+      <div className="task-board-filter"><button onClick={() => setShowCompleted(!showCompleted)}>
+        {showCompleted ? "Hide Completed" : "Show Completed"}
+        </button>
+        <button
+          onClick={() => setSortBy(sortBy === "priority" ? "date" : "priority")}
+        >
+          Sort by: {sortBy === "priority" ? "Submission Date" : "Priority"}
+        </button>
+        </div>
       <div className="task-board-header">
         <button onClick={handleOpenModal}>Add Query</button>
       </div>
@@ -195,7 +217,19 @@ const TaskBoard = () => {
         {divisions.map(division => (
           <div key={division._id} className="task-column">
             <h2>{division.title}</h2>
-            {division.tasks.map(task => (
+            {division.tasks
+              .filter((task) => (showCompleted ? true : !task.completed)) // Apply the filter
+              .sort((a, b) => {
+                if (sortBy === "priority") {
+                  // Sort by priority: High > Medium > Low
+                  const priorityOrder = { high: 1, medium: 2, low: 3 };
+                  return priorityOrder[a.priority] - priorityOrder[b.priority];
+                } else {
+                  // Sort by submission date: Newest first
+                  return new Date(b.submittedAt) - new Date(a.submittedAt);
+                }
+              })
+              .map((task) => (
                 <div
                 key={task.id}
                 className="task-card"
@@ -203,7 +237,7 @@ const TaskBoard = () => {
               >            
                 <p><strong>Query:</strong> {task.title}</p>
                 <p><strong>Priority:</strong> <span style={{ color: getPriorityColor(task.priority) }}>{task.priority}</span></p>
-                <p><strong>Completed:</strong> {task.completed ? "Yes" : "No"}</p>
+                <p><strong>Completed:</strong><span style={{ color: getCompletedColor(task.completed) }}> {task.completed ? "Yes" : "No"}</span></p>
                 <p><strong>Submitted at:</strong> {new Date(task.submittedAt).toLocaleString()}</p>
                 <button
                 onClick={(e) => {
@@ -229,6 +263,17 @@ const getPriorityColor = (priority) => {
       return "orange";
     case "high":
       return "red";
+    default:
+      return "black";
+  }
+};
+
+const getCompletedColor = (completed) => {
+  switch (completed) {
+    case true:
+      return "Blue";
+    case false:
+      return "maroon";
     default:
       return "black";
   }

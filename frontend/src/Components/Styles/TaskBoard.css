@@ -26,26 +26,55 @@
   transform: scale(0.98);
 }
 
+/* Filter styles */
+
+.task-board-filter {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.task-board-filter button {
+  padding: 10px 20px;
+  background-color: #55c0759d;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  font-size: 16px;
+  font-weight: bold;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  outline: none;
+}
+
+.task-board-filter button:hover {
+  background-color: #00b34b;
+}
+
+.task-board-filter button:active {
+  transform: scale(0.98);
+}
+
 /* Title styling */
 .title {
-  font-size: 24px;
-  font-weight: 600;
-  margin-bottom: 15px;
-  color: #333;
-  text-transform: uppercase;
+  font-size: 32px; /* Increase font size for bigger text */
+  font-weight: 700; /* Make the title bold */
+  margin: 0 0 15px; /* Add bottom margin and remove horizontal centering */
+  color: #333; /* Darker color for better visibility */
+  text-transform: uppercase; /* Keep the title uppercase */
   letter-spacing: 1px;
   line-height: 1.2;
-  text-shadow: 0px 1px 3px rgba(0, 0, 0, 0.1);
-  margin-top: 0;
+  text-shadow: 0px 1px 3px rgba(0, 0, 0, 0.1); /* Slight shadow for depth */
   padding-bottom: 10px;
-  border-bottom: 2px solid #eee;
-  display: inline-block;
-  width: auto;
+  border-bottom: 2px solid #eee; /* Underline effect */
+  text-align: left; /* Align the text to the left */
+  width: auto; /* Adjust width to fit content */
 }
+
 
 /* Content spacing */
 .content {
-  margin-left: 200px; /* Added margin for spacing from the sidebar */
+  margin-left: 50px; /* Added margin for spacing from the sidebar */
   padding: 20px; /* Padding for content spacing */
   box-sizing: border-box;
 }

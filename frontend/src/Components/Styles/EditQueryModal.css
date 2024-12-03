@@ -1,0 +1,159 @@
+/* Modal overlay */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent background */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000; /* Ensure it appears above other elements */
+  }
+  
+  /* Modal container */
+  .modal-container {
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    width: 400px; /* Fixed width for consistency */
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2); /* Adds depth */
+    animation: fadeIn 0.3s ease-in-out;
+  }
+  
+  /* Modal header */
+  .modal-container h2 {
+    font-size: 20px;
+    margin-bottom: 15px;
+    color: #333; /* Darker text for readability */
+    text-align: center;
+  }
+  
+  /* Priority selector and Completed checkbox container */
+  .modal-container label {
+    font-weight: bold;
+    display: block;
+    margin-bottom: 5px;
+    font-size: 14px;
+    color: #444;
+  }
+  
+  .modal-container select,
+  .modal-container input[type="checkbox"] {
+    margin-bottom: 15px;
+    font-size: 14px;
+    padding: 5px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    width: 100%; /* Full width for alignment */
+  }
+  
+  /* Actions buttons container */
+  .modal-actions {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+    margin-top: 20px;
+  }
+  
+  /* Button styles */
+  .modal-actions button {
+    flex: 1;
+    padding: 10px;
+    font-size: 16px;
+    font-weight: bold;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+  }
+  
+  /* Save button */
+  .modal-actions button:first-child {
+    background-color: #5580c0;
+    color: white;
+  }
+  
+  .modal-actions button:first-child:hover {
+    background-color: #0056b3;
+  }
+  
+  .modal-actions button:first-child:active {
+    transform: scale(0.97);
+  }
+  
+  /* Cancel button */
+  .modal-actions button:last-child {
+    background-color: #e63946;
+    color: white;
+  }
+  
+  .modal-actions button:last-child:hover {
+    background-color: #d62839;
+  }
+  
+  .modal-actions button:last-child:active {
+    transform: scale(0.97);
+  }
+  
+  /* Fade-in animation */
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(-10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  
+  /* Label for form elements */
+.modal-container label {
+    font-weight: bold;
+    display: block;
+    margin-bottom: 5px;
+    font-size: 14px;
+    color: #444;
+  }
+  
+  /* Checkbox container */
+  .modal-container .checkbox-container {
+    display: flex;
+    align-items: center;
+    gap: 10px; /* Add spacing between checkbox and label */
+    margin-bottom: 15px;
+  }
+  
+  /* Styled checkbox */
+  .modal-container input[type="checkbox"] {
+    width: 18px;
+    height: 18px;
+    margin: 0; /* Remove default margin */
+    border: 1px solid #ccc;
+    border-radius: 3px; /* Optional: rounded corners */
+    cursor: pointer;
+    transition: box-shadow 0.2s ease;
+  }
+  
+  /* Add focus effect */
+  .modal-container input[type="checkbox"]:focus {
+    box-shadow: 0 0 5px rgba(81, 203, 238, 1);
+    outline: none;
+  }
+  
+  /* Optional: Custom color when checked */
+  .modal-container input[type="checkbox"]:checked {
+    background-color: #5580c0;
+    border-color: #5580c0;
+  }
+  
+  /* Modal actions */
+  .modal-actions {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+    margin-top: 20px;
+  }
+  

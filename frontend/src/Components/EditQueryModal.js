@@ -36,14 +36,15 @@ const EditQueryModal = ({ isOpen, onClose, query, onSubmit }) => {
               <option value="high">High</option>
             </select>
           </div>
-          <div>
-            <label>Completed:</label>
+          <div className="checkbox-container">
             <input
-              type="checkbox"
-              checked={completed}
-              onChange={(e) => setCompleted(e.target.checked)} // Update the completed state
+                type="checkbox"
+                id="completed-checkbox"
+                checked={completed}
+                onChange={(e) => setCompleted(e.target.checked)} // Update the completed state
             />
-          </div>
+            <label htmlFor="completed-checkbox">Completed</label>
+            </div>
           <div className="modal-actions">
             <button onClick={handleSubmit}>Save</button>
             <button onClick={onClose}>Cancel</button>
