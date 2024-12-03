@@ -2,12 +2,7 @@ import React from "react";
 import { Link } from "react-router-dom";
 import "./Styles/Sidebar.css";
 
-const Sidebar = () => {
-  const handleLogout = () => {
-    // Add your logout logic here
-    console.log("User logged out");
-  };
-
+const Sidebar = ({ handleLogout }) => {
   return (
     <div className="sidebar">
       <ul>
