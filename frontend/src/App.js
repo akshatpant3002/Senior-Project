@@ -4,8 +4,10 @@ import './App.css';
 import Sidebar from './Components/Sidebar';
 import TaskManager from './Components/TaskManager';
 import Settings from './Components/Settings';
+import Reports from './Reports'
 import Login from './Components/Login';
 import Signup from './Components/Signup'; // Import Signup component
+
 
 function App() {
   // State to track if the user is logged in
@@ -31,6 +33,7 @@ function App() {
             <Routes>
               <Route path="/" element={<TaskManager />} /> {/* Dashboard */}
               <Route path="/settings" element={<Settings />} /> {/* Settings */}
+              <Route path="/insights" element={<Reports />} /> {/* Insights */}
               <Route path="*" element={<Navigate to="/" />} /> {/* Redirect unknown routes */}
             </Routes>
           </div>
