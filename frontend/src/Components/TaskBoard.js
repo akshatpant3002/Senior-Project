@@ -3,12 +3,15 @@ import axios from 'axios';
 import Modal from './QueryModal'; // Ensure this points to the correct file path
 import _ from 'lodash'; // Install lodash: npm install lodash
 import './Styles/TaskBoard.css'; // Updated file name for clarity
+import EditQueryModal from './EditQueryModal'; // Modal for editing queries
 
 const TaskBoard = () => {
   const [divisions, setDivisions] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [selectedQuery, setSelectedQuery] = useState(null);
   const [page, setPage] = useState(1);
 
   const fetchDivisionsData = async (page = 1) => {
@@ -123,42 +126,53 @@ const TaskBoard = () => {
       console.error("Failed to delete query:", error.response?.data || error.message);
     }
   };
+  
 
-  const handleToggleCompleted = async (queryId, currentStatus) => {
+  const handleEditQuery = async (queryId, updatedData) => {
     try {
-      const updatedStatus = !currentStatus; // Toggle completed status
+      // Ensure the completed field is a string
       const payload = {
         issueId: queryId,
-        completed: updatedStatus,
+        priority: updatedData.priority,
+        completed: updatedData.completed.toString(), // Ensure it's a string ("true"/"false")
       };
   
-      console.log("Updating completed status with payload:", payload);
+      console.log("Payload sent to backend:", payload);
   
-      const response = await axios.patch(
-        "http://localhost:4000/api/customerIssue/updateStatus",
+      const response = await axios.post(
+        "http://localhost:4000/api/customerIssue/editIssue",
         payload
       );
   
       if (response.status === 200) {
-        console.log("Completed status updated successfully:", response.data);
+        console.log("Query updated successfully:", response.data);
   
-        // Update the state with the new completed status
+        // Update the state with the new data
         setDivisions((prevDivisions) =>
           prevDivisions.map((division) => ({
             ...division,
             tasks: division.tasks.map((task) =>
-              task.id === queryId ? { ...task, completed: updatedStatus } : task
+              task.id === queryId
+                ? { ...task, completed: updatedData.completed, priority: updatedData.priority }
+                : task
             ),
           }))
         );
+  
+        setIsEditModalOpen(false); // Close the modal
       } else {
-        console.error("Failed to update completed status. Response status:", response.status);
+        console.error("Failed to update query. Response status:", response.status);
       }
     } catch (error) {
-      console.error("Failed to update completed status:", error.response?.data || error.message);
+      console.error("Failed to update query:", error.response?.data || error.message);
     }
   };
   
+
+  const handleQueryClick = (query) => {
+    setSelectedQuery(query);
+    setIsEditModalOpen(true);
+  };
 
   if (isLoading && !divisions.length) return <div>Loading...</div>;
   if (error) return <div>An error occurred: {error.message}</div>;
@@ -170,18 +184,33 @@ const TaskBoard = () => {
         <button onClick={handleOpenModal}>Add Query</button>
       </div>
       <Modal isOpen={isModalOpen} onClose={handleCloseModal} onSubmit={handleAddQuery} />
+      <EditQueryModal
+        isOpen={isEditModalOpen}
+        onClose={() => setIsEditModalOpen(false)}
+        query={selectedQuery}
+        onSubmit={handleEditQuery}
+      />
       <div className="title">Task Board</div>
       <div className="task-board">
         {divisions.map(division => (
           <div key={division._id} className="task-column">
             <h2>{division.title}</h2>
             {division.tasks.map(task => (
-              <div key={task.id} className="task-card">
+                <div
+                key={task.id}
+                className="task-card"
+                onClick={() => handleQueryClick(task)}
+              >            
                 <p><strong>Query:</strong> {task.title}</p>
                 <p><strong>Priority:</strong> <span style={{ color: getPriorityColor(task.priority) }}>{task.priority}</span></p>
                 <p><strong>Completed:</strong> {task.completed ? "Yes" : "No"}</p>
                 <p><strong>Submitted at:</strong> {new Date(task.submittedAt).toLocaleString()}</p>
-                <button onClick={() => handleDeleteQuery(task.id)}>Delete Query</button>
+                <button
+                onClick={(e) => {
+                  e.stopPropagation(); // Prevents triggering parent onClick
+                  handleDeleteQuery(task.id);
+                }}
+              >Delete Query</button>
               </div>
             ))}
           </div>
