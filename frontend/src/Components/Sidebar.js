@@ -6,8 +6,7 @@ const Sidebar = ({ handleLogout }) => {
   return (
     <div className="sidebar">
       <ul>
-        <li><Link to="/">Dashboard</Link></li>
-        <li><Link to="/tasks">Tasks</Link></li>
+        <li><Link to="/">Tasks</Link></li>
         <li><Link to="/insights">Insights</Link></li>
         <li><Link to="/settings">Settings</Link></li>
       </ul>

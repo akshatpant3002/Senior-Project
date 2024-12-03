@@ -1,26 +1,35 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 import './App.css';
 import Sidebar from './Components/Sidebar';
 import TaskManager from './Components/TaskManager';
 import Settings from './Components/Settings';
-import Reports from './Reports'
+import Reports from './Reports';
 import Login from './Components/Login';
-import Signup from './Components/Signup'; // Import Signup component
-
+import Signup from './Components/Signup';
 
 function App() {
   // State to track if the user is logged in
   const [isLoggedIn, setIsLoggedIn] = useState(false);
 
+  // Retrieve login state from localStorage on app load
+  useEffect(() => {
+    const storedLoginState = localStorage.getItem("isLoggedIn");
+    if (storedLoginState === "true") {
+      setIsLoggedIn(true);
+    }
+  }, []);
+
   // Function to handle login
   const handleLogin = () => {
     setIsLoggedIn(true);
+    localStorage.setItem("isLoggedIn", "true"); // Save login state to localStorage
   };
 
   // Function to handle logout
   const handleLogout = () => {
     setIsLoggedIn(false);
+    localStorage.removeItem("isLoggedIn"); // Remove login state from localStorage
   };
 
   return (
