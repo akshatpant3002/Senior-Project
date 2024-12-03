@@ -66,13 +66,18 @@ const editIssue = async (req, res) => {
 };
 
 const submitIssue = async (req, res) => {
-  const { description } = req.body;
+  const { description, priority } = req.body;
   try {
     const classificationResponse = await cohere.classify({
       model: "92f46bf6-762d-4016-a0dd-0cd1873aea18-ft",
       inputs: [description],
       examples: [],
     });
+    console.log("priority: ", priority);
+
+    if (priority != "high" && priority != "low" && priority != "medium") {
+      return res.status(400).json({ error: "Wrong priority input" });
+    }
 
     const assignedTeamName =
       classificationResponse.classifications[0]?.prediction;
@@ -85,6 +90,7 @@ const submitIssue = async (req, res) => {
 
     const newIssue = new Issue({
       issueDescription: description,
+      priority: priority,
     });
     await newIssue.save();
 
