@@ -43,57 +43,99 @@
   width: auto;
 }
 
-/* Board and column styling */
+/* Content spacing */
 .content {
   margin-left: 200px; /* Added margin for spacing from the sidebar */
   padding: 20px; /* Padding for content spacing */
   box-sizing: border-box;
 }
 
+/* Task board layout */
 .task-board {
   display: flex;
   justify-content: space-between; /* Space columns evenly */
   gap: 20px; /* Add consistent spacing between columns */
+  align-items: stretch; /* Ensure all columns stretch equally */
 }
 
+/* Task column styling */
 .task-column {
   flex: 1;
-  margin: 0 10px;
+  margin: 0; /* Remove extra horizontal margins (gap takes care of spacing) */
   background-color: #cce7d4;
   padding: 10px;
-  min-height: 300px;
+  min-height: 400px; /* Ensures the columns have a consistent height */
   border-radius: 5px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  height: 400px; /* Fixed height for consistency */
-  overflow-y: auto; /* Scrollable columns */
+  display: flex;
+  flex-direction: column; /* Ensures items stack vertically */
 }
 
+/* Header styling for the green bars */
 .task-column h2 {
   font-size: 20px;
   color: #333;
   font-weight: bold;
   text-align: center;
-  margin-bottom: 20px;
+  margin: 0; /* Remove unnecessary margins */
   padding: 10px;
-  background-color: #8de0bd9d;
-  border-radius: 5px;
+  background-color: #8de0bd9d; /* Matches the green bar */
+  border-radius: 5px 5px 0 0; /* Rounded top corners */
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   text-transform: uppercase;
   letter-spacing: 1px;
+  flex: 0; /* Prevent header from stretching vertically */
 }
 
-/* Task card hover effect */
+/* Task cards */
+/* Task card styling */
 .task-card {
-  background-color: #f9f9f9;
-  padding: 10px;
-  border-radius: 5px;
-  margin-bottom: 10px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  cursor: pointer;
+  background-color: #e6f1eab0; /* Soft cream color */
+  padding: 15px;
+  border-radius: 8px;
+  margin-bottom: 15px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+  cursor: default;
   transition: box-shadow 0.3s ease, background-color 0.3s ease;
 }
 
 .task-card:hover {
-  background-color: #dcece1b0;
+  background-color: #e8e2cb; /* Slightly darker cream on hover */
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
+
+/* Task card text */
+.task-card p {
+  margin: 5px 0;
+  font-size: 14px; /* Adjust font size for readability */
+  color: #333; /* Dark gray for text */
+  line-height: 1.5;
+}
+
+/* Delete query button */
+.task-card button {
+  background-color: #e47fa9; /* Muted coral red */
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  font-size: 14px;
+  font-weight: bold;
+  text-transform: uppercase;
+  border-radius: 5px; /* Smooth rounded edges */
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
+}
+
+.task-card button:hover {
+  background-color: #da5f5f; /* Slightly darker coral on hover */
+}
+
+.task-card button:active {
+  transform: scale(0.97); /* Slight click effect */
+}
+.task-card button {
+  display: block;
+  margin: 10px auto 0; /* Center button within the card */
+}
+

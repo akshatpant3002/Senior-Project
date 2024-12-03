@@ -140,28 +140,10 @@ const submitIssue = async (req, res) => {
 // };
 
 const removeIssues = async (req, res) => {
-  const { issueIds } = req.body;
-  if (!Array.isArray(issueIds) || issueIds.length === 0) {
-    return res
-      .status(400)
-      .json({ message: "No issueIds provided or invalid format" });
-  }
-
+  const { issueId } = req.body;
   try {
-    const existingIssues = await Issue.find({ _id: { $in: issueIds } });
-
-    const existingIssueIds = existingIssues.map((issue) =>
-      issue._id.toString()
-    );
-    const notFoundIds = issueIds.filter((id) => !existingIssueIds.includes(id));
-
-    if (notFoundIds.length > 0) {
-      return res.status(404).json({
-        message: `Issues not found for IDs: ${notFoundIds.join(", ")}`,
-      });
-    }
-
-    await Issue.deleteMany({ _id: { $in: issueIds } });
+    await Issue.deleteOne({ _id: issueId });
+    issueIds = [issueId]
 
     const teams = await Team.find({ customerIssues: { $in: issueIds } });
 
